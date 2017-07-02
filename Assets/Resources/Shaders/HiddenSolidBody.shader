@@ -1,4 +1,4 @@
-﻿Shader "Hidden/SoliBody"
+﻿Shader "Hidden/SolidBody"
 {
 	Properties
 	{

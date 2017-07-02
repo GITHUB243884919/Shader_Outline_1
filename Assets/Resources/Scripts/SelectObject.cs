@@ -57,7 +57,7 @@ public class SelectObject : MonoBehaviour {
 			if(m_outterLineMat == null){
                 //m_outterLineMat = new Material("Shader\"Hidden/SolidBody1\"{SubShader{Pass{Color("+
                 //    outterColor.r +","+outterColor.g +","+outterColor.b +","+outterColor.a +")}}}");
-                m_outterLineMat = new Material(Shader.Find("Hidden/SoliBody"));
+                m_outterLineMat = new Material(Shader.Find("Hidden/SolidBody"));
 				m_outterLineMat.hideFlags = HideFlags.HideAndDontSave;
 				m_outterLineMat.shader.hideFlags =  HideFlags.HideAndDontSave; 
 			}
