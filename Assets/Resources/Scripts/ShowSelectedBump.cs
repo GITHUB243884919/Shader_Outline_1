@@ -21,7 +21,10 @@ public class ShowSelectedBump : MonoBehaviour {
         Debug.Log(sRenderer != null);
 		myColor = sRenderer.material.color;
 		myShader = sRenderer.material.shader;
-		selectedShader = Shader.Find("Hidden/RimLightSpecBump");
+        string shaderName = "Hidden/RimLightSpecBump";
+        //string shaderName = "Hidden/RimLightSpce";
+        selectedShader = Shader.Find(shaderName);
+        
 		if(!selectedShader)
 		{
 			enabled = false;
@@ -40,9 +43,10 @@ public class ShowSelectedBump : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update () 
+    {
 	}
-	  void OnMouseEnter() {
+	void OnMouseEnter() {
         //renderer.material.color = Color.black;
 		sRenderer.material.shader = selectedShader;
 		sRenderer.material.SetColor("_RimColor",outterColor);

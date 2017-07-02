@@ -70,6 +70,7 @@ public class SelectObject : MonoBehaviour {
 	void Start () {
 		if (!SystemInfo.supportsImageEffects)
 		{
+            Debug.Log("!SystemInfo.supportsImageEffects");
 			enabled = false;
 			return;
 		}
@@ -117,23 +118,12 @@ public class SelectObject : MonoBehaviour {
 		}
 	}
 	
-	public void FourTapCone (RenderTexture source, RenderTexture dest, int iteration)
-	{
-		float off = 0.5f + iteration*Spread;
-		Graphics.BlitMultiTap (source, dest, blurMaterial,
-            new Vector2( off, off),
-			new Vector2(-off, off),
-            new Vector2( off,-off),
-            new Vector2(-off,-off)
-		);
-	}
-	
 	void OnPreRender() 
 	{
 		outterLineCamera.targetTexture = outterLineTexture;
 		outterLineCamera.RenderWithShader(outterLineMat.shader,"");
 	}
-	
+
 	void OnRenderImage (RenderTexture source, RenderTexture destination)
 	{
 		Iterations = Mathf.Clamp( Iterations, 0, 15 );
@@ -166,4 +156,15 @@ public class SelectObject : MonoBehaviour {
 		RenderTexture.ReleaseTemporary(buffer);
 		RenderTexture.ReleaseTemporary(buffer2);
 	}
+
+    public void FourTapCone(RenderTexture source, RenderTexture dest, int iteration)
+    {
+        float off = 0.5f + iteration * Spread;
+        Graphics.BlitMultiTap(source, dest, blurMaterial,
+            new Vector2(off, off),
+            new Vector2(-off, off),
+            new Vector2(off, -off),
+            new Vector2(-off, -off)
+        );
+    }
 }
