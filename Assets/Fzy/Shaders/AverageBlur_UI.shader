@@ -15,8 +15,9 @@
         //--------------add------------------
         _Distance ("Distance", Float) = 0.015
         //--------------add------------------
-        _BlurOffsets("_BlurOffsets", Color) = (2,2,0,0)
-	}
+        _BlurOffsets("_BlurOffsets", Vector) = (10,10,1,1)
+        //_BlurOffsets("_BlurOffsets", Float) = 1
+  	}
  
 	SubShader
 	{
@@ -61,7 +62,7 @@
 				};
 
 				float4 _MainTex_TexelSize;
-				float4 _BlurOffsets;
+				vector _BlurOffsets;
 
 				v2f vert (appdata_img v)
 				{
@@ -71,7 +72,8 @@
 
 					o.pos = mul (UNITY_MATRIX_MVP, v.vertex);
 					float2 uv = MultiplyUV (UNITY_MATRIX_TEXTURE0, v.texcoord.xy - float2(offX, offY));
-				
+                    //float2 uv = v.texcoord.xy;
+				    
 					o.uv[0].xy = uv + float2( offX, offY);
 					o.uv[0].zw = uv + float2(-offX, offY);
 					o.uv[1].xy = uv + float2( offX,-offY);
@@ -85,22 +87,22 @@
 				fixed4 frag( v2f i ) : COLOR
 				{
 					fixed4 c;
-					c  = tex2D( _MainTex, i.uv[0].xy );
+					c = tex2D( _MainTex, i.uv[0].xy );
 					c += tex2D( _MainTex, i.uv[0].zw );
 					c += tex2D( _MainTex, i.uv[1].xy );
 					c += tex2D( _MainTex, i.uv[1].zw );
-					return c * 0.5 ;
+					return c * 0.25;
 				}		
         ENDCG
 		}
 	}
-    Subshader {
-		Pass {
-			SetTexture [_MainTex] {constantColor [_Color] combine texture * constant alpha}
-			SetTexture [_MainTex] {constantColor [_Color] combine texture * constant + previous}
-			SetTexture [_MainTex] {constantColor [_Color] combine texture * constant + previous}
-			SetTexture [_MainTex] {constantColor [_Color] combine texture * constant + previous}		
-		}
+ //   Subshader {
+	//	Pass {
+	//		SetTexture [_MainTex] {constantColor [_Color] combine texture * constant alpha}
+	//		SetTexture [_MainTex] {constantColor [_Color] combine texture * constant + previous}
+	//		SetTexture [_MainTex] {constantColor [_Color] combine texture * constant + previous}
+	//		SetTexture [_MainTex] {constantColor [_Color] combine texture * constant + previous}		
+	//	}
 
-	}
+	//}
 }
