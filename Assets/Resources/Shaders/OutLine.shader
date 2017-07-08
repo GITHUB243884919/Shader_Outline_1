@@ -23,7 +23,7 @@ Category {
 				struct v2f {
 					float4 pos : POSITION;
 					half2 uv : TEXCOORD0;
-					float2 off;
+					float2 off : TEXCOORD1;
 				};
 
 				float4 _MainTex_TexelSize;
@@ -43,7 +43,7 @@ Category {
 				}
 				
 				sampler2D _MainTex;
-				fixed4 _Color;
+				//fixed4 _Color;
 
 				fixed4 frag( v2f i ) : COLOR
 				{
@@ -60,19 +60,21 @@ Category {
 					fixed4 cc = tex2D( _MainTex, i.uv.xy);
 					
 					c.rgb /=4;
-					if(cc.r>0)
-					{
-						c.a = 0;
-						c.rgb = (0,0,0);
-					}
-					else if(c.r>0)
-					{
-						c.a = 1;
-					}
-					else
-					{	
-						c.a = 0;
-					}
+					//if(cc.r>0)
+					//{
+					//	c.a = 0;
+					//	//c.rgb = (0,0,0);
+					//	c.rgb = fixed3(0,0,0);
+						
+					//}
+					//else if(c.r>0)
+					//{
+					//	c.a = 1;
+					//}
+					//else
+					//{	
+					//	c.a = 0;
+					//}
 					return c ;
 				}
 			ENDCG
@@ -80,15 +82,15 @@ Category {
 		
 	}
 
-	Subshader {
-		Pass {
-			SetTexture [_MainTex] {constantColor [_Color] combine texture * constant alpha}
-			SetTexture [_MainTex] {constantColor [_Color] combine texture * constant + previous}
-			SetTexture [_MainTex] {constantColor [_Color] combine texture * constant + previous}
-			SetTexture [_MainTex] {constantColor [_Color] combine texture * constant + previous}		
-		}
+	//Subshader {
+	//	Pass {
+	//		SetTexture [_MainTex] {constantColor [_Color] combine texture * constant alpha}
+	//		SetTexture [_MainTex] {constantColor [_Color] combine texture * constant + previous}
+	//		SetTexture [_MainTex] {constantColor [_Color] combine texture * constant + previous}
+	//		SetTexture [_MainTex] {constantColor [_Color] combine texture * constant + previous}		
+	//	}
 
-	}
+	//}
 }
 
 Fallback off

@@ -23,7 +23,7 @@ Category {
 
 				float4 _MainTex_TexelSize;
 				float4 _BlurOffsets;
-
+				//float4 _ffffffff;
 				v2f vert (appdata_img v)
 				{
 					v2f o;
@@ -56,15 +56,15 @@ Category {
 		}
 	}
 
-	Subshader {
-		Pass {
-			SetTexture [_MainTex] {constantColor [_Color] combine texture * constant alpha}
-			SetTexture [_MainTex] {constantColor [_Color] combine texture * constant + previous}
-			SetTexture [_MainTex] {constantColor [_Color] combine texture * constant + previous}
-			SetTexture [_MainTex] {constantColor [_Color] combine texture * constant + previous}		
-		}
+	//Subshader {
+	//	Pass {
+	//		SetTexture [_MainTex] {constantColor [_Color] combine texture * constant alpha}
+	//		SetTexture [_MainTex] {constantColor [_Color] combine texture * constant + previous}
+	//		SetTexture [_MainTex] {constantColor [_Color] combine texture * constant + previous}
+	//		SetTexture [_MainTex] {constantColor [_Color] combine texture * constant + previous}		
+	//	}
 
-	}
+	//}
 }
 
 Fallback off

@@ -40,11 +40,11 @@ Category {
 		}
 	}
 
-	SubShader {
-		Pass {
-			SetTexture [_MainTex] {constantColor [_Color] combine constant * texture DOUBLE}
-		}
-	}
+	//SubShader {
+	//	Pass {
+	//		SetTexture [_MainTex] {constantColor [_Color] combine constant * texture DOUBLE}
+	//	}
+	//}
 }
 
 Fallback off

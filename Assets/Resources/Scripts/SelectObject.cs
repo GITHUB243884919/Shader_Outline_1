@@ -4,7 +4,7 @@ using System.Collections;
 [RequireComponent (typeof(Camera))]
 public class SelectObject : MonoBehaviour {
 	
-	public int Iterations = 3;
+	public int Iterations = 4;
 	public float Spread = 0.7f;
 	public Color outterColor = new Color(0.133f,1,0,1);
 	
@@ -55,10 +55,12 @@ public class SelectObject : MonoBehaviour {
 	protected Material outterLineMat{
 		get{
 			if(m_outterLineMat == null){
+                // fzy 把这个固定管线的shader改成片面shader
                 //m_outterLineMat = new Material("Shader\"Hidden/SolidBody1\"{SubShader{Pass{Color("+
                 //    outterColor.r +","+outterColor.g +","+outterColor.b +","+outterColor.a +")}}}");
                 m_outterLineMat = new Material(Shader.Find("Hidden/SolidBody"));
-				m_outterLineMat.hideFlags = HideFlags.HideAndDontSave;
+                //m_outterLineMat = new Material(Shader.Find("Hidden/OutLine"));
+                m_outterLineMat.hideFlags = HideFlags.HideAndDontSave;
 				m_outterLineMat.shader.hideFlags =  HideFlags.HideAndDontSave; 
 			}
 			return m_outterLineMat;
@@ -98,26 +100,7 @@ public class SelectObject : MonoBehaviour {
 		}
 		
 	}
-	
-	
-	void OnDisable()
-    {
-		if(outterLineTexture)
-		{
-			DestroyImmediate(outterLineTexture);
-			outterLineTexture = null;
-		}
-		if( m_CompositeMaterial ) {
-			DestroyImmediate( m_CompositeMaterial );
-		}
-		if( m_BlurMaterial ) {
-			DestroyImmediate( m_BlurMaterial );
-		}
-		if(m_outterLineMat) {
-			DestroyImmediate (m_outterLineMat);
-		}
-	}
-	
+		
 	void OnPreRender() 
 	{
 		outterLineCamera.targetTexture = outterLineTexture;
@@ -126,36 +109,62 @@ public class SelectObject : MonoBehaviour {
 
 	void OnRenderImage (RenderTexture source, RenderTexture destination)
 	{
-		Iterations = Mathf.Clamp( Iterations, 0, 15 );
+
+        Iterations = Mathf.Clamp(Iterations, 0, 15); /* fzy 不知道为什么要这么这一句*/
 		Spread = Mathf.Clamp( Spread, 0.5f, 6.0f );
 		
 		RenderTexture buffer = RenderTexture.GetTemporary(outterLineTexture.width, outterLineTexture.height, 0);
 		RenderTexture buffer2 = RenderTexture.GetTemporary(outterLineTexture.width, outterLineTexture.height, 0);
-		
+
+        // fzy 把选中的物体渲染出来的texture给buffer
 		Graphics.Blit(outterLineTexture, buffer);
 
-		bool oddEven = true;
-		for(int i = 0; i < Iterations; i++)
-		{
-			if( oddEven )
-				FourTapCone (buffer, buffer2, i);
-			else
-				FourTapCone (buffer2, buffer, i);
-			oddEven = !oddEven;
-		}
-		Graphics.Blit(source,destination);
-		if( oddEven ){
-			Graphics.Blit(outterLineTexture,buffer, cutoffMaterial);
-			Graphics.Blit(buffer,destination,compositeMaterial);
-		}
-		else{
-			Graphics.Blit(outterLineTexture,buffer2, cutoffMaterial);
-			Graphics.Blit(buffer2,destination,compositeMaterial);
-		}		
+        bool oddEven = true;
+        for (int i = 0; i < Iterations; i++)
+        {
+            if (oddEven)
+                FourTapCone(buffer, buffer2, i);
+            else
+                FourTapCone(buffer2, buffer, i);
+            oddEven = !oddEven;
+        }
+        //Graphics.Blit(buffer, destination);
+        Graphics.Blit(source, destination);
+        if (oddEven)
+        {
+            Graphics.Blit(outterLineTexture, buffer, cutoffMaterial);
+            Graphics.Blit(buffer, destination, compositeMaterial);
+        }
+        else
+        {
+            Graphics.Blit(outterLineTexture, buffer2, cutoffMaterial);
+            Graphics.Blit(buffer2, destination, compositeMaterial);
+        }		
 		
 		RenderTexture.ReleaseTemporary(buffer);
 		RenderTexture.ReleaseTemporary(buffer2);
 	}
+
+    void OnDisable()
+    {
+        if (outterLineTexture)
+        {
+            DestroyImmediate(outterLineTexture);
+            outterLineTexture = null;
+        }
+        if (m_CompositeMaterial)
+        {
+            DestroyImmediate(m_CompositeMaterial);
+        }
+        if (m_BlurMaterial)
+        {
+            DestroyImmediate(m_BlurMaterial);
+        }
+        if (m_outterLineMat)
+        {
+            DestroyImmediate(m_outterLineMat);
+        }
+    }
 
     public void FourTapCone(RenderTexture source, RenderTexture dest, int iteration)
     {

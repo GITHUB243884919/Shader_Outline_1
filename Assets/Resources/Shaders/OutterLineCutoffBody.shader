@@ -15,7 +15,7 @@ Shader "Hidden/OutterLineCutoffBody" {
 			#pragma fragmentoption ARB_precision_hint_fastest 
 			
 			sampler2D _MainTex;
-			sampler2D _MainTex1;
+			//sampler2D _MainTex1;  //fzy 这个不加也可以，可能是原作者的笔误 
 			struct appdata
 			{
 				float4 vertex : POSITION;
