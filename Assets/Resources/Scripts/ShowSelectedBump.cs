@@ -1,6 +1,10 @@
 using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// 首先将shader制定为高光，并轮廓外发光 ："Hidden/RimLightSpecBump"
+/// 当被选中时，将层设置成8，8是副摄像机定义的渲染层
+/// </summary>
 public class ShowSelectedBump : MonoBehaviour {
 
 	public Shader selectedShader;
