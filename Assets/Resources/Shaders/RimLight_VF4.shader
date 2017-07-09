@@ -1,6 +1,6 @@
 ﻿//通过Object空间算边缘
 //半兰伯特模型算漫反射
-Shader "Custom/RimLight_VF"
+Shader "Custom/RimLight_VF4"
 {
 	Properties {
 		_Color ("Main Color", Color) = (1,1,1,1)
@@ -40,6 +40,8 @@ Shader "Custom/RimLight_VF"
 			{
 				float2 uv : TEXCOORD0;
 				float4 vertex : SV_POSITION;
+				float3 worldPos :TEXCOORD1;
+				float3 normal : NORMAL;
 				fixed3 color : COLOR;
 			};
 			
@@ -57,18 +59,19 @@ Shader "Custom/RimLight_VF"
 				
 				fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz;
 				//世界的法线
-				float3 normal =  normalize(mul(v.normal, (float3x3)_World2Object)); 
+				o.normal =  mul(v.normal, (float3x3)_World2Object); 
+				o.worldPos = mul(_Object2World, v.vertex);
 				//光的方向
-				fixed3 lightDir = normalize(_WorldSpaceLightPos0.xyz);
+				//fixed3 lightDir = normalize(_WorldSpaceLightPos0.xyz);
 				//漫反射
-				fixed3 diffuse = _LightColor0.xyz * _Diffuse.rgb * saturate(dot(normal, lightDir));
+				//fixed3 diffuse = _LightColor0.xyz * _Diffuse.rgb * saturate(dot(normal, lightDir));
 				//摄像机方向
 				fixed3 viewDir = ObjSpaceViewDir(v.vertex);
 				
 				//边缘加色
 				half   rim = 1 - saturate(dot(viewDir, v.normal));
 				fixed3 rimColor = _RimColor.rgb * pow (rim, _RimPower);
-				o.color = ambient + diffuse + rimColor;
+				o.color = rimColor;
 				return o;
 			}
 			
@@ -76,8 +79,19 @@ Shader "Custom/RimLight_VF"
 			{
 				// sample the texture
 				fixed4 col = tex2D(_MainTex, i.uv);
-				col *= _Color;
-				col.rgb += i.color;
+				//光的方向
+				//fixed3 lightDir = normalize(-(i.worldPos - _WorldSpaceLightPos0.xyz));
+				fixed3 lightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
+				//fixed3 lightDir = normalize(_WorldSpaceLightPos0.xyz);
+				//
+				float3 normal = normalize(i.normal);
+				//漫反射
+				fixed3 diffuse = _LightColor0.xyz * col.rgb * saturate(dot(normal, lightDir));
+				
+				//col *= _Color;
+				col.rgb = diffuse + i.color + UNITY_LIGHTMODEL_AMBIENT.xyz;
+				//col.rgb = diffuse;
+				//col.a = 1;
 				return col;
 			}
 			ENDCG
